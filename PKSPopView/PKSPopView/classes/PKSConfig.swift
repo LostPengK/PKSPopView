@@ -13,7 +13,7 @@ import Foundation
 import UIKit
 
 enum PKSShowAnimationStyle {
-    case scale,fromTop,FromLeft,FromBottom,FromRight
+    case scale,fromTop,fromLeft,fromBottom,fromRight
 }
 
 enum PKSHideAnimationStyle {
@@ -21,7 +21,7 @@ enum PKSHideAnimationStyle {
 }
 
 enum PKSPanGestureRecognizerDirection {
-    case top,left,bottom,right
+    case top,left,bottom,right,none
 }
 
 struct PKSAutoLayoutStyle: OptionSet {

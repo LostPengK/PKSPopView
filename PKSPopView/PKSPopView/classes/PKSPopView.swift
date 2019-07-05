@@ -12,7 +12,7 @@
 import UIKit
 
 class PKSPopView: UIView {
-
+    
     ///default is 0.35
     public var duration: CGFloat  = 0.35
     
@@ -50,11 +50,10 @@ class PKSPopView: UIView {
     public var popViewInsets: UIEdgeInsets = .zero
     
     ///enable user pan to hide contentview.default is NO. works only when allowUserPanContentView is YES
-    public var enablePanContentViewToHide: Bool = false {
-        didSet {
-            
-        }
-    }
+    public var enablePanContentViewToHide: Bool = false
+    
+    ///direction
+    public var panDirection: PKSPanGestureRecognizerDirection = .none
     
     /// pan to hide min distance percent. less than this,content view will back to origin place,otherwise content will hide. default is 0.1;
     var panToHideMinPerecent: CGFloat = 0.1
@@ -82,12 +81,18 @@ class PKSPopView: UIView {
     
     ///gesture
     private var panGesture: UIPanGestureRecognizer?
+    private var tapGesture: UITapGestureRecognizer?
     
     typealias showCompletionBlock = () -> Void
     typealias hideCompletionBlock = () -> Void
     
     public var showCompletionBlock: showCompletionBlock?
     public var hideCompletionBlock: hideCompletionBlock?
+    
+    private var changeOffsetX:CGFloat = 0.0
+    private var changeOffsetY:CGFloat = 0.0
+    private var lastX:CGFloat = 0.0
+    private var lastY:CGFloat = 0.0
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -144,6 +149,126 @@ class PKSPopView: UIView {
         
         addSubview(self.contentView!)
         
+        if self.userTouchActionEnable{
+            if self.panGesture == nil {
+                self.tapGesture  = UITapGestureRecognizer(target: self, action: Selector(("tapCoverView")))
+            }
+            self.coverView.addGestureRecognizer(self.tapGesture!)
+        }
+        else{
+            guard self.tapGesture != nil else { return }
+            self.coverView.removeGestureRecognizer(self.tapGesture!)
+        }
+        
+        
+        if (self.enablePanContentViewToHide) {
+            if self.panGesture == nil {
+                self.panGesture  = UIPanGestureRecognizer(target: self, action: Selector(("panContentView:")))
+            }
+            self.addGestureRecognizer(self.panGesture!)
+          }else{
+            if (self.panGesture != nil) {
+                self.removeGestureRecognizer(self.panGesture!)
+            }
+        }
+    }
+    
+    @objc private func tapCoverView(){
+        
+        if self.userTouchActionEnable {
+            self.hideContentView()
+        }
+        
+    }
+    
+    @objc private func panContentView(_ gesture: UIPanGestureRecognizer!){
+        
+        if (enablePanContentViewToHide == false || self.contentView == nil) {
+            return
+        }
+        
+        let touchPoint = gesture.location(in: gesture.view!)
+        
+        if (gesture.state == .began){
+            lastX = touchPoint.x;
+            lastY = touchPoint.y;
+            
+            userPaned = true;
+        }
+        
+        var alphaFactor:CGFloat = 0.0
+        if (gesture.state == .changed){
+            let currentX = touchPoint.x
+            changeOffsetX = currentX - lastX
+            lastX = currentX
+            
+            let currentY = touchPoint.y
+            changeOffsetY = currentY - lastY
+            lastY = currentY
+            
+            var centerX = self.contentView!.center.x
+            var centerY = self.contentView!.center.y
+            
+            switch self.panDirection {
+            case .top:
+                centerY = self.contentView!.center.y + changeOffsetY
+                centerY = centerY <= self.contentOriginFrame!.midY  ? centerY : self.contentView!.center.y
+            case .left:
+                centerX = self.contentView!.center.x + changeOffsetX;
+                centerX = centerX <= self.contentOriginFrame!.midX ? centerX : self.contentView!.center.x
+            case .bottom:
+                centerY = self.contentView!.center.y + changeOffsetY
+                centerY = centerY > self.contentOriginFrame!.midY ? centerY : self.contentView!.center.y
+            case .right:
+                centerX = self.contentView!.center.x + changeOffsetX
+                centerX = centerX > self.contentOriginFrame!.midX ? centerX : self.contentView!.center.x
+            case .none:
+                print("you need special the direction")
+            }
+        
+            self.contentView!.center = CGPoint(x: centerX, y: centerY)
+            var offset:CGFloat = 0.0
+            
+            if (self.panDirection == .top || self.panDirection == .bottom) {
+                offset = self.contentView!.frame.midY - self.contentOriginFrame!.midY
+                panedPercent = CGFloat(fabsf(Float(offset) / Float(self.contentView!.frame.height)))
+                alphaFactor = 1.0 - panedPercent
+            }else if (self.panDirection == .left || self.panDirection == .right) {
+                offset = self.contentView!.frame.midX  - self.contentOriginFrame!.midX
+                panedPercent = CGFloat(fabsf(Float(offset)/Float(self.contentView!.frame.width)))
+                alphaFactor = 1.0 - panedPercent
+            }
+            let alpha = alphaFactor * self.backAlpha
+            print("alphaFactor===\(alphaFactor)),alpha===\(alpha)")
+            self.coverView.alpha = alpha
+        }
+        
+        gesture.setTranslation(.zero, in: self)
+        
+        if gesture.state == .ended || gesture.state == .cancelled {
+            var percent:Float = 0.0;
+            if (self.panDirection == .top || self.panDirection == .bottom) {
+                percent = fabsf(Float(self.contentView!.frame.midY)  - Float(self.contentOriginFrame!.midY))/Float(self.contentOriginFrame!.height)
+            }else if (self.panDirection == .left || self.panDirection == .right) {
+                percent = fabsf(Float(self.contentView!.frame.midX - self.contentOriginFrame!.minX))/Float(self.contentOriginFrame!.width)
+            }
+            
+            let hide = percent >= Float(self.panToHideMinPerecent) ? true : false
+            if (hide) {//计算剩余时间
+                hideContentView()
+            }else{//回到原始位置
+                UIView.animate(withDuration: TimeInterval(self.duration) , animations: {
+                    self.contentView!.frame = self.contentOriginFrame!
+                    self.coverView.alpha = self.backAlpha
+                }) { (finish) in
+                    
+                }
+            }
+            
+            userPaned = false
+            panedPercent = 0.0
+        }
+        
     }
     
     private func layoutContentView(){
@@ -192,14 +317,14 @@ extension PKSPopView{
             addDetaultShowAnimation()
         case .fromTop:
             addShowAnimationFromTop()
-        case .FromLeft:
+        case .fromLeft:
             addShowAnimatioFromLeft()
-        case .FromBottom:
+        case .fromBottom:
             addShowAnimationFromBottom()
-        case .FromRight:
+        case .fromRight:
             addShowAnimationFromRight()
         default:
-            addDetaultShowAnimation()
+            print("")
         }
     }
     
@@ -217,30 +342,60 @@ extension PKSPopView{
     
     private func addShowAnimationFromTop(){
         
+        var frame = self.contentView?.frame
+        let frame1 = self.contentView?.frame
+        frame!.origin.y = -frame!.size.height
+        self.contentView?.frame = frame!
+        
+        UIView.animate(withDuration: TimeInterval(self.duration), animations: {
+            self.contentView?.frame = frame1!
+        }) { (finish) in
+            
+        }
+   
     }
     
     private func addShowAnimatioFromLeft(){
         var frame = self.contentView!.frame
-        let frame1 = self.contentView!.frame
+        let frame1 = self.contentOriginFrame
         frame.origin.x = -frame.size.width
         self.contentView!.frame = frame
         
         UIView.animate(withDuration: TimeInterval(self.duration) , animations: {
-            self.contentView!.frame = frame1;
+            self.contentView!.frame = frame1!
         }) { (finish) in
-            
+
         }
         
     }
     
     private func addShowAnimationFromBottom(){
+        var frame = self.contentOriginFrame;
+        let frame1 = self.contentOriginFrame;
         
+        frame?.origin.y = self.frame.size.height;
+        self.contentView!.frame = frame!;
+        
+        UIView.animate(withDuration: TimeInterval(self.duration) , animations: {
+            self.contentView!.frame = frame1!
+        }) { (finish) in
+            
+        }
+   
     }
     
     private func addShowAnimationFromRight(){
+        var frame = self.contentView!.frame;
+        let frame1 = self.contentView!.frame;
+        frame.origin.x = self.frame.size.width;
+        self.contentView!.frame = frame;
         
+        UIView.animate(withDuration: TimeInterval(self.duration) , animations: {
+            self.contentView!.frame = frame1
+        }) { (finish) in
+            
+        }
     }
-  
 }
 
 extension PKSPopView{
@@ -250,15 +405,15 @@ extension PKSPopView{
         case .scale:
             addDetaultHideAnimation()
         case .toTop:
-            addShowAnimationFromTop()
+            addHideAnimationToTop()
         case .toLeft:
-            addShowAnimatioFromLeft()
+            addHideAnimatioToLeft()
         case .toBottom:
-            addShowAnimationFromBottom()
+            addHideAnimationToBottom()
         case .toRight:
-            addShowAnimationFromRight()
+            addHideAnimationToRight()
         default:
-            addDetaultHideAnimation()
+            print("")
         }
     }
     
@@ -283,22 +438,63 @@ extension PKSPopView{
     }
     
     private func addHideAnimationToTop(){
+        var frame = self.contentView!.frame;
+        frame.origin.y = -frame.size.height;
+        let hDuration = userPaned ? self.duration * (1-panedPercent) : self.duration;
+        
+        UIView.animate(withDuration: TimeInterval(hDuration) , animations: {
+            self.contentView!.frame = frame;
+            self.coverView.alpha =  0.0;
+        }) { (finish) in
+            self.hide()
+        }
         
     }
     
     private func addHideAnimatioToLeft(){
         
+        var frame = self.contentView?.frame;
+        frame!.origin.x = -frame!.size.width;
+        let hDuration = userPaned ? self.duration * (1-panedPercent) : self.duration;
+        UIView.animate(withDuration: TimeInterval(hDuration) , animations: {
+            self.contentView?.frame = frame!;
+            self.coverView.alpha =  0.0;
+        }) { (finish) in
+            self.hide()
+        }
+        
     }
     
     private func addHideAnimationToBottom(){
+        var  frame = self.contentView!.frame;
+        frame.origin.y = self.frame.size.height;
+        let hDuration = userPaned ? self.duration * (1-panedPercent) : self.duration;
+        
+        UIView.animate(withDuration: TimeInterval(hDuration) , animations: {
+            self.contentView!.frame = frame;
+            self.coverView.alpha =  0.0;
+        }) { (finish) in
+            self.hide()
+        }
         
     }
     
     private func addHideAnimationToRight(){
+        var frame = self.contentView!.frame
+        frame.origin.x = self.frame.size.width
+        
+        let hDuration = userPaned ? self.duration * (1-panedPercent) : self.duration;
+        UIView.animate(withDuration: TimeInterval(hDuration) , animations: {
+            self.contentView!.frame = frame
+            self.coverView.alpha =  0.0
+        }) { (finish) in
+            self.hide()
+        }
         
     }
     
     private func hide(){
         self.contentView?.removeFromSuperview()
+        self.removeFromSuperview()
     }
 }
