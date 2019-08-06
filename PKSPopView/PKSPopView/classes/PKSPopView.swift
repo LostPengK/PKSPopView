@@ -322,7 +322,6 @@ public class PKSPopView: UIView {
             self.addConstraint(consY)
         }
         
-        self.updateFocusIfNeeded()
     }
     
     public func showOnView(_ view: UIView? ){
