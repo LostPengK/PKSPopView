@@ -26,11 +26,11 @@ public enum PKSPanGestureRecognizerDirection {
 
 public struct PKSAutoLayoutStyle: OptionSet {
     public let rawValue: Int
-    static let center = PKSAutoLayoutStyle(rawValue: 1<<0)
-    static let top = PKSAutoLayoutStyle(rawValue: 1<<1)
-    static let left = PKSAutoLayoutStyle(rawValue: 1<<2)
-    static let bottom = PKSAutoLayoutStyle(rawValue: 1<<3)
-    static let right = PKSAutoLayoutStyle(rawValue: 1<<4)
+    public static let center = PKSAutoLayoutStyle(rawValue: 1<<0)
+    public static let top = PKSAutoLayoutStyle(rawValue: 1<<1)
+    public static let left = PKSAutoLayoutStyle(rawValue: 1<<2)
+    public static let bottom = PKSAutoLayoutStyle(rawValue: 1<<3)
+    public static let right = PKSAutoLayoutStyle(rawValue: 1<<4)
     
     public init(rawValue:Int) {
         self.rawValue = rawValue
