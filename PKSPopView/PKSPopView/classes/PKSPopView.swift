@@ -11,7 +11,7 @@
 
 import UIKit
 
-class PKSPopView: UIView {
+public class PKSPopView: UIView {
     
     ///default is 0.35
     public var duration: CGFloat  = 0.35
@@ -56,7 +56,7 @@ class PKSPopView: UIView {
     public var panDirection: PKSPanGestureRecognizerDirection = .none
     
     /// pan to hide min distance percent. less than this,content view will back to origin place,otherwise content will hide. default is 0.1;
-    var panToHideMinPerecent: CGFloat = 0.1
+    public var panToHideMinPerecent: CGFloat = 0.1
     
     ///contentView
     public var superContainerView: UIView?
@@ -74,7 +74,7 @@ class PKSPopView: UIView {
     private var contentOriginFrame: CGRect?
     
     ///user paned or not
-    private var userPaned: Bool = false
+    public var userPaned: Bool = false
     
     ///panedPercent
     private var panedPercent: CGFloat = 0.0
@@ -86,8 +86,8 @@ class PKSPopView: UIView {
     typealias showCompletionBlock = () -> Void
     typealias hideCompletionBlock = () -> Void
     
-    public var showCompletionBlock: showCompletionBlock?
-    public var hideCompletionBlock: hideCompletionBlock?
+    var showCompletionBlock: showCompletionBlock?
+    var hideCompletionBlock: hideCompletionBlock?
     
     private var changeOffsetX:CGFloat = 0.0
     private var changeOffsetY:CGFloat = 0.0
@@ -132,7 +132,7 @@ class PKSPopView: UIView {
         self.addSubview(self.coverView)
     }
     
-    public func prepare(_ sView: UIView!){
+    internal func prepare(_ sView: UIView!){
         
         self.superContainerView = sView
         self.superContainerView?.addSubview(self)
@@ -323,8 +323,6 @@ extension PKSPopView{
             addShowAnimationFromBottom()
         case .fromRight:
             addShowAnimationFromRight()
-        default:
-            print("")
         }
     }
     
@@ -412,8 +410,6 @@ extension PKSPopView{
             addHideAnimationToBottom()
         case .toRight:
             addHideAnimationToRight()
-        default:
-            print("")
         }
     }
     

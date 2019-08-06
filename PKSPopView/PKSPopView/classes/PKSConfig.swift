@@ -12,75 +12,75 @@
 import Foundation
 import UIKit
 
-enum PKSShowAnimationStyle {
+public enum PKSShowAnimationStyle {
     case scale,fromTop,fromLeft,fromBottom,fromRight
 }
 
-enum PKSHideAnimationStyle {
+public enum PKSHideAnimationStyle {
     case scale,toTop,toLeft,toBottom,toRight
 }
 
-enum PKSPanGestureRecognizerDirection {
+public enum PKSPanGestureRecognizerDirection {
     case top,left,bottom,right,none
 }
 
-struct PKSAutoLayoutStyle: OptionSet {
-    let rawValue: UInt
-    static let center = PKSAutoLayoutStyle(rawValue: 0<<0)
-    static let top = PKSAutoLayoutStyle(rawValue: 1<<0)
-    static let left = PKSAutoLayoutStyle(rawValue: 3<<0)
-    static let bottom = PKSAutoLayoutStyle(rawValue: 3<<0)
-    static let right = PKSAutoLayoutStyle(rawValue: 4<<0)
+public struct PKSAutoLayoutStyle: OptionSet {
+    public let rawValue: Int
+    static let center = PKSAutoLayoutStyle(rawValue: 1<<0)
+    static let top = PKSAutoLayoutStyle(rawValue: 1<<1)
+    static let left = PKSAutoLayoutStyle(rawValue: 1<<2)
+    static let bottom = PKSAutoLayoutStyle(rawValue: 1<<3)
+    static let right = PKSAutoLayoutStyle(rawValue: 1<<4)
+    
+    public init(rawValue:Int) {
+        self.rawValue = rawValue
+    }
 }
 
-class PKSConfig {
+public class PKSConfig {
     
-    static let shared = PKSConfig()
+    public static let shared = PKSConfig()
     
     ///default is 0.35
     public var duration: CGFloat  = 0.35
     
     /// default is scale
-    var showAnimationStyle: PKSShowAnimationStyle = .scale
+    public var showAnimationStyle: PKSShowAnimationStyle = .scale
     
     /// default is scale
-    var hideAnimationStyle: PKSHideAnimationStyle = .scale
+    public var hideAnimationStyle: PKSHideAnimationStyle = .scale
     
     ///default is true
-    var userTouchActionEnable: Bool = true
+    public var userTouchActionEnable: Bool = true
     
     ///default is true
-    var addShowAnimation: Bool = true
+    public var addShowAnimation: Bool = true
     
     ///default is true
-    var addHideAnimation: Bool = true
+    public var addHideAnimation: Bool = true
     
     ///default is false
-    var useAutoLayout: Bool = false
+    public var useAutoLayout: Bool = false
     
     ///default is center
-    var layoutPositon: PKSAutoLayoutStyle =  [.center]
+    public var layoutPositon: PKSAutoLayoutStyle =  [.center]
     
     ///default is black
-    var backColor: UIColor = .black
+    public var backColor: UIColor = .black
     
     ///default is 0.75;
-    var backAlpha: CGFloat = 0.75
+    public var backAlpha: CGFloat = 0.75
     
     ///default is zero;
-    var contentViewInsets: UIEdgeInsets = .zero
+    public var contentViewInsets: UIEdgeInsets = .zero
     
     ///default is zero;
-    var popViewInsets: UIEdgeInsets = .zero
+    public var popViewInsets: UIEdgeInsets = .zero
     
     ///enable user pan to hide contentview.default is NO. works only when allowUserPanContentView is YES
-    var enablePanContentViewToHide: Bool = false
+    public var enablePanContentViewToHide: Bool = false
     
     /// pan to hide min distance percent. less than this,content view will back to origin place,otherwise content will hide. default is 0.1;
-    var panToHideMinPerecent: CGFloat = 0.1
+    public var panToHideMinPerecent: CGFloat = 0.1
     
-    private init(){
-        /// duration default is 0.35
-      
-    }
 }
