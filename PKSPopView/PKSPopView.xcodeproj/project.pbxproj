@@ -14,6 +14,7 @@
 		6B5CBF5422CD988200A8F13E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6B5CBF5222CD988200A8F13E /* LaunchScreen.storyboard */; };
 		6B5CBF5E22CD9D1D00A8F13E /* PKSPopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5CBF5D22CD9D1D00A8F13E /* PKSPopView.swift */; };
 		6B5CBF6022CD9D4600A8F13E /* PKSConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5CBF5F22CD9D4600A8F13E /* PKSConfig.swift */; };
+		6B71641D22F94B4A00420084 /* AutoLayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B71641C22F94B4A00420084 /* AutoLayoutView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		6B5CBF5522CD988200A8F13E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6B5CBF5D22CD9D1D00A8F13E /* PKSPopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKSPopView.swift; sourceTree = "<group>"; };
 		6B5CBF5F22CD9D4600A8F13E /* PKSConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKSConfig.swift; sourceTree = "<group>"; };
+		6B71641C22F94B4A00420084 /* AutoLayoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoLayoutView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 			children = (
 				6B5CBF4922CD987F00A8F13E /* AppDelegate.swift */,
 				6B5CBF4B22CD987F00A8F13E /* ViewController.swift */,
+				6B71641C22F94B4A00420084 /* AutoLayoutView.swift */,
 				6B5CBF5C22CD9CD900A8F13E /* classes */,
 				6B5CBF4D22CD987F00A8F13E /* Main.storyboard */,
 				6B5CBF5022CD988200A8F13E /* Assets.xcassets */,
@@ -151,6 +154,7 @@
 			files = (
 				6B5CBF4C22CD987F00A8F13E /* ViewController.swift in Sources */,
 				6B5CBF4A22CD987F00A8F13E /* AppDelegate.swift in Sources */,
+				6B71641D22F94B4A00420084 /* AutoLayoutView.swift in Sources */,
 				6B5CBF6022CD9D4600A8F13E /* PKSConfig.swift in Sources */,
 				6B5CBF5E22CD9D1D00A8F13E /* PKSPopView.swift in Sources */,
 			);

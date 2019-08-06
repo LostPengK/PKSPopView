@@ -273,6 +273,56 @@ public class PKSPopView: UIView {
     
     private func layoutContentView(){
         
+        guard contentView != nil else {
+            return
+        }
+        
+        self.contentView!.translatesAutoresizingMaskIntoConstraints = false
+        for item in self.constraints{
+            if let view = item.firstItem as? UIView ,view == contentView {
+                self.removeConstraint(item)
+            }
+        }
+        
+        if self.layoutPositon.contains(.center) {
+            let consX = NSLayoutConstraint(item: contentView!, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+            let consY = NSLayoutConstraint(item: contentView!, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0)
+            let consLeft = NSLayoutConstraint(item: contentView!, attribute: .left, relatedBy: .greaterThanOrEqual, toItem: self, attribute: .left, multiplier: 1.0, constant: popViewInsets.left)
+            let consRight = NSLayoutConstraint(item: contentView!, attribute: .right, relatedBy: .lessThanOrEqual, toItem: self, attribute: .right, multiplier: 1.0, constant: -popViewInsets.right)
+            let consTop = NSLayoutConstraint(item: contentView!, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: self, attribute: .top, multiplier: 1.0, constant: popViewInsets.top)
+            let consBottom = NSLayoutConstraint(item: contentView!, attribute: .bottom, relatedBy: .lessThanOrEqual, toItem: self, attribute: .bottom, multiplier: 1.0, constant: -popViewInsets.bottom)
+            self.addConstraints([consX,consY,consLeft,consRight,consTop,consBottom])
+        }
+      
+        if self.layoutPositon.contains(.top) {
+            let consTop = NSLayoutConstraint(item: contentView!, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: self, attribute: .top, multiplier: 1.0, constant: popViewInsets.top)
+            self.addConstraint(consTop)
+        }
+        if self.layoutPositon.contains(.left) {
+            let consLeft = NSLayoutConstraint(item: contentView!, attribute: .left, relatedBy: .greaterThanOrEqual, toItem: self, attribute: .left, multiplier: 1.0, constant: popViewInsets.left)
+            self.addConstraint(consLeft)
+        }
+        
+        if self.layoutPositon.contains(.bottom) {
+            let consBottom = NSLayoutConstraint(item: contentView!, attribute: .bottom, relatedBy: .lessThanOrEqual, toItem: self, attribute: .bottom, multiplier: 1.0, constant: -popViewInsets.bottom)
+            self.addConstraint(consBottom)
+        }
+       
+        if self.layoutPositon.contains(.right) {
+            let consRight = NSLayoutConstraint(item: contentView!, attribute: .right, relatedBy: .lessThanOrEqual, toItem: self, attribute: .right, multiplier: 1.0, constant: -popViewInsets.right)
+            self.addConstraint(consRight)
+        }
+       
+        if ( self.layoutPositon.contains(.top) && self.layoutPositon.contains(.center) ) ||  ( self.layoutPositon.contains(.bottom) && self.layoutPositon.contains(.center) ) {
+            let consX = NSLayoutConstraint(item: contentView!, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+            self.addConstraint(consX)
+        }
+        if ( self.layoutPositon.contains(.left) && self.layoutPositon.contains(.center) ) ||  ( self.layoutPositon.contains(.right) && self.layoutPositon.contains(.center) ) {
+            let consY = NSLayoutConstraint(item: contentView!, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0)
+            self.addConstraint(consY)
+        }
+        
+        self.updateFocusIfNeeded()
     }
     
     public func showOnView(_ view: UIView? ){

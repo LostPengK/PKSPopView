@@ -18,9 +18,24 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ptz-HT-I05">
+                                <rect key="frame" x="182.5" y="432.5" width="51" height="31"/>
+                                <connections>
+                                    <action selector="switchAutoLayout:" destination="BYZ-38-t0r" eventType="valueChanged" id="QlU-MS-Xw0"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="use autolayout" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eP3-nX-wxH">
+                                <rect key="frame" x="134.5" y="484" width="145" height="27.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="23"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="DN8-6L-N27">
-                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="371"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="371" id="Udf-lR-daS"/>
+                                </constraints>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" textLabel="fro-pn-aAR" style="IBUITableViewCellStyleDefault" id="ZdP-70-6SD">
                                         <rect key="frame" x="0.0" y="28" width="414" height="44"/>
@@ -48,8 +63,11 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="ptz-HT-I05" firstAttribute="top" secondItem="DN8-6L-N27" secondAttribute="bottom" constant="17.5" id="JzE-PG-0iW"/>
                             <constraint firstItem="DN8-6L-N27" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="T7B-KH-kbH"/>
-                            <constraint firstItem="DN8-6L-N27" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="fCg-nx-mBC"/>
+                            <constraint firstItem="ptz-HT-I05" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="b7m-Ax-cdh"/>
+                            <constraint firstItem="eP3-nX-wxH" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="cTF-uF-E1t"/>
+                            <constraint firstItem="eP3-nX-wxH" firstAttribute="top" secondItem="ptz-HT-I05" secondAttribute="bottom" constant="20.5" id="sju-HF-cvg"/>
                             <constraint firstItem="DN8-6L-N27" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="xJ7-Wa-2mH"/>
                             <constraint firstItem="DN8-6L-N27" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="z5Y-fk-JdJ"/>
                         </constraints>
@@ -57,6 +75,7 @@
                     </view>
                     <connections>
                         <outlet property="mainTable" destination="DN8-6L-N27" id="dD3-7z-aqJ"/>
+                        <outlet property="sswitch" destination="ptz-HT-I05" id="ENk-fY-7Pr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

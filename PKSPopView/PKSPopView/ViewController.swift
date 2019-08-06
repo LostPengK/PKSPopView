@@ -15,14 +15,29 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var mainTable: UITableView!
     
+    @IBOutlet weak var `sswitch`: UISwitch!
+    
     var  dataSource: [String] = [String]()
+    
+    var useAutoLayoutToContentView = true
+    
     let pks = PKSPopView()
+    
     lazy var contentView:UIView! = {
         let view: UIView! = UIView(frame: CGRect(origin: CGPoint(x: 200, y: 500), size: CGSize(width: 100, height: 100)))
         view.backgroundColor = UIColor.gray
         return view
     }()
     
+    lazy var layoutView:AutoLayoutView = {
+        let view = AutoLayoutView()
+        return view
+    }()
+    
+    @IBAction func switchAutoLayout(_ sender: Any) {
+        let mySwitch = sender as! UISwitch
+        useAutoLayoutToContentView = mySwitch.isOn
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +50,7 @@ class ViewController: UIViewController {
         
         let config1: PKSConfig = .shared
         print(config1)
+        
         
     }
 
@@ -65,12 +81,20 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource{
         pks.addHideAnimation = true
         pks.addShowAnimation = true
         
+        pks.useAutoLayout = useAutoLayoutToContentView
+        if pks.useAutoLayout {
+            pks.contentView = layoutView
+            pks.layoutPositon = [.top,.left,.right]
+        }
+        
         switch indexPath.row {
         case 0:
             pks.showAnimationStyle = .scale
             pks.hideAnimationStyle = .scale
             pks.panDirection = .top
             self.contentView!.frame = CGRect(origin: CGPoint(x: 100, y: 100), size: CGSize(width: 200, height: 200))
+            
+            
         case 1:
             pks.showAnimationStyle = .fromTop
             pks.hideAnimationStyle = .toTop
